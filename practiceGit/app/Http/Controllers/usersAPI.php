@@ -3,44 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\models\users;
+use App\ServicesAPI\usersServices;
 use Illuminate\Http\Request;
 
 class usersAPI extends Controller
 {
     
-    protected function getUsers(Request $request)
+    protected function getUsers(users $users, usersServices $usersServices)
     {
-    	$data = users::all();
-
-    	return response()->json($data);
+    	return response()->json($usersServices->getUsers());
     }
 
-    protected function getSpecific_user(Request $request)
+    protected function getSpecific_user(Request $request, usersServices $usersServices)
     {
-    	$data = users::find($request->user_id);
-
-    	return response()->json($data);
+        return response()->json($usersServices->getSpecific_user($request->user_id));
     }
 
-    protected function updateSpecific_user(Request $request)
+    protected function createUser(Request $request, usersServices $usersServices, users $users)
     {
-    	$users = users::find($request->user_id);
-    	$users->firstname = $request->firstname;
-    	$users->middlename = $request->middlename;
-    	$users->lastname = $request->lastname;
-    	$users->address = $request->address;
-    	$users->age = $request->age;
-    	$users->gender = $request->gender;
-    	$result = $users->save();
+        return response()->json($usersServices->createUser($request, $users));
+    }
 
-    	return response()->json($result);
+    protected function updateSpecific_user(Request $request, usersServices $usersServices, users $users)
+    {
+    	return response()->json($usersServices->updateSpecific_user($request, $users));
     }
 
     protected function deleteSpecific_user(Request $request)
     {
-    	$users = users::find($request->user_id);
-    	$result = $users->delete();
-
-    	return response()->json($result);
+    	return response()->json($usersServices->deleteSpecific_user($request, $users));
     }
 }
